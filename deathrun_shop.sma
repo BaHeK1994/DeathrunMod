@@ -81,7 +81,7 @@ public native_add_item(plugin, params)
 	if(function[0])
 	{
 		// public CanBuyItem(id);
-		eItemInfo[ItemCanBuy] = CreateMultiForward(function, ET_CONTINUE, FP_CELL);
+		eItemInfo[ItemCanBuy] = get_func_id(function, plugin);
 	}
 	
 	ArrayPushArray(g_aShopItems, eItemInfo);
@@ -144,7 +144,7 @@ Show_ShopMenu(id, page)
 		if(~eItemInfo[ItemTeam] & team) continue;
 		
 		szNum[0] = i;
-		hCallback = (GetCanBuyAnswer(id, eItemInfo[ItemCanBuy]) == ITEM_ENABLED) ? -1 : g_hCallbackDisabled;
+		hCallback = (GetCanBuyAnswer(id, eItemInfo[ItemPlugin], eItemInfo[ItemCanBuy]) == ITEM_ENABLED) ? -1 : g_hCallbackDisabled;
 		formatex(szText, charsmax(szText), "%s %s \R\y$%d", eItemInfo[ItemName], g_szItemAddition, eItemInfo[ItemCost]);
 		
 		menu_additem(menu, szText, szNum, eItemInfo[ItemAccess], hCallback);
@@ -176,7 +176,7 @@ public ShopMenu_Handler(id, menu, item)
 	
 	new team = (1 << _:cs_get_user_team(id));
 	
-	if((~eItemInfo[ItemTeam] & team) || GetCanBuyAnswer(id, eItemInfo[ItemCanBuy]) != ITEM_ENABLED)
+	if((~eItemInfo[ItemTeam] & team) || GetCanBuyAnswer(id, eItemInfo[ItemPlugin], eItemInfo[ItemCanBuy]) != ITEM_ENABLED)
 	{
 		client_print_color(id, print_team_default, "%s^1 %L", PREFIX, id, "DRS_CANT_BUY");
 		return PLUGIN_HANDLED;
@@ -201,10 +201,12 @@ public ShopMenu_Handler(id, menu, item)
 	Show_ShopMenu(id, item / 7);
 	return PLUGIN_HANDLED;
 }
-GetCanBuyAnswer(id, callback)
+GetCanBuyAnswer(id, plugin, callback)
 {
 	if(!callback) return ITEM_ENABLED;
-	new return_value; ExecuteForward(callback, return_value, id);
+    callfunc_begin_i(callback, plugin);
+    callfunc_push_int(id);
+    new return_value = callfunc_end();
 	return return_value;
 }
 public ShopDisableItem()
