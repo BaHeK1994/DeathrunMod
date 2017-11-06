@@ -122,7 +122,7 @@ public dr_chosen_new_terrorist(id)
 }
 public Ham_PlayerPreThink_Pre(id)
 {
-	if(id != g_iTerrorist || !is_user_alive(id)) return HAM_IGNORED;
+	if(g_iCurMode != g_iModeSkillMaster || id != g_iTerrorist || !is_user_alive(id)) return HAM_IGNORED;
 	
 	new buttons = pev(id, pev_button);
 	new oldbuttons = pev(id, pev_oldbuttons);
