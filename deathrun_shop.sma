@@ -204,9 +204,9 @@ public ShopMenu_Handler(id, menu, item)
 GetCanBuyAnswer(id, plugin, callback)
 {
 	if(!callback) return ITEM_ENABLED;
-    callfunc_begin_i(callback, plugin);
-    callfunc_push_int(id);
-    new return_value = callfunc_end();
+	callfunc_begin_i(callback, plugin);
+	callfunc_push_int(id);
+	new return_value = callfunc_end();
 	return return_value;
 }
 public ShopDisableItem()
